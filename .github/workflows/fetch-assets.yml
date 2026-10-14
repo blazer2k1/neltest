@@ -13,8 +13,7 @@ jobs:
 
       - name: Download 7z
         run: |
-          curl -L -A "Mozilla/5.0" --fail --retry 3 \
-            -o ryzom_assets_newbieland.7z \
+          wget --content-disposition -c -O ryzom_assets_newbieland.7z \
             "https://sourceforge.net/projects/ryzom/files/ryzom_assets_newbieland.7z/download"
 
       - name: Verify download
