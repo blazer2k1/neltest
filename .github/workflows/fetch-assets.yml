@@ -1,0 +1,36 @@
+name: Fetch Newbieland Assets
+on:
+  workflow_dispatch:
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Download 7z
+        run: |
+          curl -L -A "Mozilla/5.0" --fail --retry 3 \
+            -o ryzom_assets_newbieland.7z \
+            "https://sourceforge.net/projects/ryzom/files/ryzom_assets_newbieland.7z/download"
+
+      - name: Verify download
+        run: |
+          file ryzom_assets_newbieland.7z
+          ls -lh ryzom_assets_newbieland.7z
+
+      - name: Extract 7z
+        run: |
+          sudo apt-get install -y p7zip-full
+          7z x ryzom_assets_newbieland.7z -o./newbieland-assets/
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "actions@github.com"
+          git add ./newbieland-assets/
+          git commit -m "Add Newbieland assets" || echo "No changes to commit"
+          git push
